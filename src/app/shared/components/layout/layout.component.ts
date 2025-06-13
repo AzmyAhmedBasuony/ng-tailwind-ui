@@ -12,6 +12,15 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50">
       <div class="h-full px-4 flex items-center justify-between">
+        <!-- Mobile Menu Button (only visible on mobile) -->
+        <button (click)="toggleMobileMenu()"
+                class="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path *ngIf="isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
         <!-- Logo and System Name -->
         <div class="flex items-center space-x-3">
           <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-600">
@@ -173,60 +182,15 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
 
     <!-- Dashboard Layout -->
     <div *ngIf="currentLayout === 'dashboard'" class="min-h-screen bg-gray-100">
-      <!-- Top Header -->
-      <header class="bg-white shadow-sm fixed w-full z-10">
-        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            <!-- Logo -->
-            <div class="flex items-center">
-              <span class="text-xl font-bold text-gray-900">Dashboard</span>
-            </div>
-
-            <!-- Breadcrumbs -->
-            <div class="flex items-center">
-              <nav class="flex" aria-label="Breadcrumb">
-                <ol class="flex items-center space-x-2">
-                  <li>
-                    <div class="flex items-center">
-                      <a [routerLink]="['/layouts']" class="text-gray-500 hover:text-gray-700">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                      </a>
-                    </div>
-                  </li>
-                  <li *ngFor="let crumb of breadcrumbs; let last = last">
-                    <div class="flex items-center">
-                      <svg *ngIf="!last" class="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      <a *ngIf="!last" [routerLink]="crumb.path" class="ml-2 text-sm font-medium text-gray-500 hover:text-gray-700">
-                        {{ crumb.label }}
-                      </a>
-                      <span *ngIf="last" class="ml-2 text-sm font-medium text-gray-900">
-                        {{ crumb.label }}
-                      </span>
-                    </div>
-                  </li>
-                </ol>
-              </nav>
-            </div>
-
-            <!-- Header Actions -->
-            <div class="flex items-center space-x-4">
-              <button class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-              </button>
-              <div class="h-8 w-8 rounded-full bg-gray-200"></div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <!-- Mobile Overlay (only visible when mobile menu is open) -->
+      <div *ngIf="isMobileMenuOpen"
+           (click)="closeMobileMenu()"
+           class="fixed inset-0   bg-opacity-50 z-40 md:hidden"></div>
 
       <!-- Side Navigation -->
-      <nav class="fixed left-0 top-16 bottom-0 w-64 bg-white shadow-sm overflow-y-auto">
+      <nav [class.translate-x-0]="isMobileMenuOpen"
+           [class.-translate-x-full]="!isMobileMenuOpen"
+           class="fixed left-0 top-16 bottom-0 w-64 bg-white shadow-sm overflow-y-auto z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0">
         <div class="px-4 py-6">
           <ul class="space-y-1">
             <li *ngFor="let item of navItems">
@@ -247,8 +211,9 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
       </nav>
 
       <!-- Main Content -->
-      <main class="pl-64 pt-16">
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main [class.md:pl-64]="currentLayout === 'dashboard'"
+            class="relative pt-16 z-30">
+        <div class="max-w-7xl mx-auto py-6   ">
           <router-outlet></router-outlet>
         </div>
       </main>
@@ -256,9 +221,14 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
 
     <!-- Classic Layout -->
     <div *ngIf="currentLayout === 'classic'" class="min-h-screen bg-gray-100 flex flex-col">
+      <!-- Mobile Overlay (only visible when mobile menu is open) -->
+      <div *ngIf="isMobileMenuOpen"
+           (click)="closeMobileMenu()"
+           class="fixed inset-0  bg-opacity-50 z-40 md:hidden"></div>
+
       <!-- Top Header -->
       <header class="bg-white shadow-sm">
-        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-full mx-auto px-4   ">
           <div class="flex justify-between h-16">
             <!-- Logo -->
             <div class="flex items-center">
@@ -308,9 +278,11 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
         </div>
       </header>
 
-      <div class="flex flex-1">
+      <div class="flex flex-1 relative">
         <!-- Side Navigation -->
-        <nav class="w-64 bg-white shadow-sm overflow-y-auto">
+        <nav [class.translate-x-0]="isMobileMenuOpen"
+             [class.-translate-x-full]="!isMobileMenuOpen"
+             class="fixed md:static left-0 top-16 bottom-0 w-64 bg-white shadow-sm overflow-y-auto z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0">
           <div class="px-4 py-6">
             <ul class="space-y-1">
               <li *ngFor="let item of navItems">
@@ -331,8 +303,9 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
         </nav>
 
         <!-- Main Content -->
-        <main class="flex-1">
-          <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main
+              class="flex-1 relative z-30">
+          <div class="max-w-7xl mx-auto py-6   ">
             <router-outlet></router-outlet>
           </div>
         </main>
@@ -340,7 +313,7 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
 
       <!-- Footer -->
       <footer class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-4 px-4   ">
           <p class="text-center text-sm text-gray-500">© 2024 Your Company. All rights reserved.</p>
         </div>
       </footer>
@@ -348,10 +321,17 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
 
     <!-- Minimal Layout -->
     <div *ngIf="currentLayout === 'minimal'" class="min-h-screen bg-gray-100 flex">
+      <!-- Mobile Overlay (only visible when mobile menu is open) -->
+      <div *ngIf="isMobileMenuOpen"
+           (click)="closeMobileMenu()"
+           class="fixed inset-0   bg-opacity-50 z-40 md:hidden"></div>
+
       <!-- Collapsible Side Navigation -->
-      <nav [class.w-64]="!isSidebarCollapsed"
+      <nav [class.translate-x-0]="isMobileMenuOpen"
+           [class.-translate-x-full]="!isMobileMenuOpen"
+           [class.w-64]="!isSidebarCollapsed"
            [class.w-16]="isSidebarCollapsed"
-           class="bg-white shadow-sm overflow-y-auto transition-all duration-300">
+           class="fixed md:static left-0 top-16 bottom-0 bg-white shadow-sm overflow-y-auto z-50 transform transition-all duration-300 ease-in-out md:translate-x-0">
         <div class="px-4 py-6">
           <button (click)="toggleSidebar()"
                   class="w-full flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md">
@@ -379,7 +359,8 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
       </nav>
 
       <!-- Main Content -->
-      <main class="flex-1">
+      <main
+            class="flex-1 relative z-30">
         <!-- Breadcrumbs -->
         <div class="bg-white shadow-sm px-4 py-3">
           <nav class="flex" aria-label="Breadcrumb">
@@ -410,7 +391,7 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
           </nav>
         </div>
 
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-6   ">
           <router-outlet></router-outlet>
         </div>
       </main>
@@ -451,6 +432,13 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
     :host > div {
       transition: all 0.3s ease-in-out;
     }
+
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+      nav {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+    }
   `]
 })
 export class LayoutComponent implements OnInit, OnDestroy {
@@ -464,6 +452,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   breadcrumbs: { label: string; path: string }[] = [];
   isProfileMenuOpen = false;
   isNotificationsOpen = false;
+  isMobileMenuOpen = false;
 
   // Sample notifications data
   notifications = [
@@ -620,6 +609,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     if (this.profileMenu && !this.profileMenu.nativeElement.contains(event.target)) {
       this.isProfileMenuOpen = false;
+    }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    // Close mobile menu when screen size changes to desktop
+    if (window.innerWidth >= 768) {
+      this.isMobileMenuOpen = false;
     }
   }
 }
