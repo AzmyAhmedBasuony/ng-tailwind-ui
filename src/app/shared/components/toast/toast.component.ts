@@ -36,7 +36,7 @@ export type ToastInput = Omit<Toast, 'id'>;
       role="alert"
       aria-live="assertive"
     >
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2" style="margin-top: 4rem;">
         <div
           *ngFor="let toast of toasts"
           [class]="getToastClasses(toast)"
@@ -102,6 +102,7 @@ export type ToastInput = Omit<Toast, 'id'>;
       z-index: 50;
       pointer-events: none;
       width: 100%;
+      margin-top: 2rem;
       max-width: 24rem;
     }
   `]
