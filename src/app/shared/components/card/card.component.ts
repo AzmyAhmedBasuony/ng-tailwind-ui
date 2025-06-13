@@ -9,13 +9,13 @@ type CardVariant = 'default' | 'bordered' | 'elevated' | 'flat';
   imports: [CommonModule],
   template: `
     <div [class]="cardClasses">
-      <div *ngIf="header" class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">{{ header }}</h3>
+      <div *ngIf="header" class="px-6 py-4 border-b border-color">
+        <h3 class="text-lg font-semibold text-primary">{{ header }}</h3>
       </div>
       <div class="p-6">
         <ng-content></ng-content>
       </div>
-      <div *ngIf="footer" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+      <div *ngIf="footer" class="px-6 py-4 border-t border-color bg-secondary">
         <ng-content select="[cardFooter]"></ng-content>
       </div>
     </div>
@@ -31,10 +31,10 @@ export class CardComponent {
     const baseClasses = 'rounded-lg overflow-hidden';
 
     const variantClasses = {
-      default: 'bg-white',
-      bordered: 'bg-white border border-gray-200',
-      elevated: 'bg-white shadow-lg',
-      flat: 'bg-gray-50'
+      default: 'bg-primary',
+      bordered: 'bg-primary border border-color',
+      elevated: 'bg-primary shadow-lg',
+      flat: 'bg-secondary'
     };
 
     return `${baseClasses} ${variantClasses[this.variant]}`;

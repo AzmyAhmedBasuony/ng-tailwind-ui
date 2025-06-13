@@ -191,21 +191,21 @@ import { ThemeService } from '../../../services/theme.service';
       <!-- Mobile Overlay (only visible when mobile menu is open) -->
       <div *ngIf="isMobileMenuOpen"
            (click)="closeMobileMenu()"
-           class="fixed inset-0   bg-opacity-50 z-40 md:hidden"></div>
+           class="fixed inset-0 bg-primary bg-opacity-50 z-40 md:hidden"></div>
 
       <!-- Side Navigation -->
       <nav [class.translate-x-0]="isMobileMenuOpen"
            [class.-translate-x-full]="!isMobileMenuOpen"
-           class="fixed left-0 top-16 bottom-0 w-64 bg-white shadow-sm overflow-y-auto z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0">
+           class="fixed left-0 top-16 bottom-0 w-64 bg-primary shadow-sm overflow-y-auto z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0">
         <div class="px-4 py-6">
           <ul class="space-y-1">
             <li *ngFor="let item of navItems">
               <a [routerLink]="['/layouts', item.route]"
-                 [routerLinkActive]="'bg-blue-50 text-primary-700 border-primary-500 shadow-sm'"
-                 class="flex items-center px-4 py-2.5 text-gray-700 rounded-md hover:bg-gray-50 border-l-4 border-transparent transition-all duration-200 group">
+                 [routerLinkActive]="'bg-tertiary text-primary-color border-primary-color shadow-sm'"
+                 class="flex items-center px-4 py-2.5 text-secondary rounded-md hover:bg-tertiary border-l-4 border-transparent transition-all duration-200 group">
                 <svg class="h-5 w-5 mr-3 transition-colors duration-200"
-                     [class.text-primary-600]="router.isActive('/layouts/' + item.route, true)"
-                     [class.group-hover:text-primary-600]="!router.isActive('/layouts/' + item.route, true)"
+                     [class.text-primary-color]="router.isActive('/layouts/' + item.route, true)"
+                     [class.group-hover:text-primary-color]="!router.isActive('/layouts/' + item.route, true)"
                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
                 </svg>
@@ -219,7 +219,7 @@ import { ThemeService } from '../../../services/theme.service';
       <!-- Main Content -->
       <main [class.md:pl-64]="currentLayout === 'dashboard'"
             class="relative pt-16 z-30">
-        <div class="max-w-7xl mx-auto py-6   ">
+        <div class="max-w-7xl mx-auto py-6 px-4">
           <router-outlet></router-outlet>
         </div>
       </main>
