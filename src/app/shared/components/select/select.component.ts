@@ -87,8 +87,10 @@ export interface SelectOption {
         <div
           *ngIf="isOpen"
           [@dropdownAnimation]
-          class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg"
+          class="fixed z-[9999] mt-1 w-[var(--select-width)] rounded-md bg-white shadow-lg"
           role="listbox"
+          [style.left.px]="dropdownPosition.x"
+          [style.top.px]="dropdownPosition.y"
         >
           <ul
             class="max-h-60 overflow-auto rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
@@ -206,6 +208,7 @@ export class SelectComponent implements ControlValueAccessor, OnChanges {
   selectedOption: SelectOption | null = null;
   selectedOptions: SelectOption[] = [];
   filteredOptions: SelectOption[] = [];
+  dropdownPosition = { x: 0, y: 0 };
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
@@ -249,6 +252,7 @@ export class SelectComponent implements ControlValueAccessor, OnChanges {
       this.isOpen = !this.isOpen;
       if (this.isOpen) {
         this.onTouched();
+        this.updateDropdownPosition();
       }
     }
   }
@@ -339,5 +343,28 @@ export class SelectComponent implements ControlValueAccessor, OnChanges {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  private updateDropdownPosition() {
+    const button = this.selectButton.nativeElement;
+    const rect = button.getBoundingClientRect();
+    const width = rect.width;
+
+    // Set the width CSS variable
+    button.style.setProperty('--select-width', `${width}px`);
+
+    // Calculate position
+    this.dropdownPosition = {
+      x: rect.left,
+      y: rect.bottom + window.scrollY
+    };
+  }
+
+  @HostListener('window:scroll')
+  @HostListener('window:resize')
+  onScrollOrResize() {
+    if (this.isOpen) {
+      this.updateDropdownPosition();
+    }
   }
 }
