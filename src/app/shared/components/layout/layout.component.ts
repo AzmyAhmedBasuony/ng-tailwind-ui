@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { LayoutService, LayoutType } from '../../services/layout.service';
+import { ThemeToggleComponent } from '../../../components/theme-toggle/theme-toggle.component';
+import { ThemeService } from '../../../services/theme.service';
+
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, ThemeToggleComponent],
   template: `
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50">
+    <header class="fixed top-0 left-0 right-0 h-16 bg-primary border-b border-color z-50">
       <div class="h-full px-4 flex items-center justify-between">
         <!-- Mobile Menu Button (only visible on mobile) -->
         <button (click)="toggleMobileMenu()"
-                class="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                class="md:hidden p-2 rounded-md text-secondary hover:text-primary hover:bg-tertiary focus:outline-none">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             <path *ngIf="isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -23,28 +26,31 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
 
         <!-- Logo and System Name -->
         <div class="flex items-center space-x-3">
-          <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-600">
+          <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-color">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
           <div class="flex flex-col">
-            <h1 class="text-lg font-semibold text-gray-900">NG Tailwind UI</h1>
-            <p class="text-xs text-gray-500">Admin Dashboard</p>
+            <h1 class="text-lg font-semibold text-primary">NG Tailwind UI</h1>
+            <p class="text-xs text-secondary">Admin Dashboard</p>
           </div>
         </div>
 
-        <!-- Right Section: Search, Notifications, Profile -->
+        <!-- Right Section: Search, Theme Toggle, Notifications, Profile -->
         <div class="flex items-center space-x-4">
           <!-- Search -->
           <div class="relative hidden md:block">
             <input type="text"
                    placeholder="Search..."
-                   class="w-64 pl-10 pr-4 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
-            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="w-64 pl-10 pr-4 py-2 text-sm text-primary bg-secondary rounded-lg border border-color focus:outline-none focus:border-primary-color focus:ring-1 focus:ring-primary-color">
+            <svg class="absolute left-3 top-2.5 h-5 w-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
+
+          <!-- Theme Toggle -->
+          <app-theme-toggle></app-theme-toggle>
 
           <!-- Notifications -->
           <div class="relative" #notificationsMenu>
@@ -181,7 +187,7 @@ import { LayoutService, LayoutType } from '../../services/layout.service';
     </header>
 
     <!-- Dashboard Layout -->
-    <div *ngIf="currentLayout === 'dashboard'" class="min-h-screen bg-gray-100">
+    <div *ngIf="currentLayout === 'dashboard'" class="min-h-screen bg-secondary">
       <!-- Mobile Overlay (only visible when mobile menu is open) -->
       <div *ngIf="isMobileMenuOpen"
            (click)="closeMobileMenu()"
@@ -507,7 +513,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   constructor(
     private layoutService: LayoutService,
     public router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected readonly themeService: ThemeService
   ) {}
 
   ngOnInit() {
