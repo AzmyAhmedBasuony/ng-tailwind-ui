@@ -16,6 +16,10 @@ import { ToastComponent, Toast, ToastInput } from '../../shared/components/toast
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
 import { ImageUploadComponent } from '../../shared/components/image-upload/image-upload.component';
 import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { DateInputComponent } from '../../shared/components/date-input/date-input.component';
+import { TimeInputComponent } from '../../shared/components/time-input/time-input.component';
+import { DatetimeInputComponent } from '../../shared/components/datetime-input/datetime-input.component';
 
 @Component({
   selector: 'app-demo',
@@ -37,7 +41,12 @@ import { SelectComponent, SelectOption } from '../../shared/components/select/se
     ToastComponent,
     FileUploadComponent,
     ImageUploadComponent,
-    SelectComponent
+    SelectComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    DateInputComponent,
+    TimeInputComponent,
+    DatetimeInputComponent
   ],
   template: `
     <div class="min-h-screen bg-gray-100">
@@ -502,6 +511,181 @@ import { SelectComponent, SelectOption } from '../../shared/components/select/se
               </div>
             </div>
           </section>
+
+          <!-- Date Input Examples -->
+          <section id="date-inputs" class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-6">Date Inputs</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Date Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Basic Date Input</h3>
+                <app-date-input
+                  [(ngModel)]="dateValue"
+                  placeholder="Select a date">
+                </app-date-input>
+                <div class="mt-2 text-sm text-gray-500">
+                  Selected date: {{ dateValue || 'None' }}
+                </div>
+              </div>
+
+              <!-- Date Input with Helper Text -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Date Input with Helper Text</h3>
+                <app-date-input
+                  [(ngModel)]="dateValue2"
+                  placeholder="Select a date"
+                  helperText="Please select a date within the next 30 days"
+                  [showHelperText]="true">
+                </app-date-input>
+              </div>
+
+              <!-- Disabled Date Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Disabled Date Input</h3>
+                <app-date-input
+                  [(ngModel)]="dateValue3"
+                  placeholder="Select a date"
+                  [disabled]="true">
+                </app-date-input>
+              </div>
+            </div>
+          </section>
+
+          <!-- Time Input Examples -->
+          <section id="time-inputs" class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-6">Time Inputs</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Time Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Basic Time Input</h3>
+                <app-time-input
+                  [(ngModel)]="timeValue"
+                  placeholder="Select a time">
+                </app-time-input>
+                <div class="mt-2 text-sm text-gray-500">
+                  Selected time: {{ timeValue || 'None' }}
+                </div>
+              </div>
+
+              <!-- Time Input with Helper Text -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Time Input with Helper Text</h3>
+                <app-time-input
+                  [(ngModel)]="timeValue2"
+                  placeholder="Select a time"
+                  helperText="Please select a time during business hours (9 AM - 5 PM)"
+                  [showHelperText]="true">
+                </app-time-input>
+              </div>
+
+              <!-- Disabled Time Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Disabled Time Input</h3>
+                <app-time-input
+                  [(ngModel)]="timeValue3"
+                  placeholder="Select a time"
+                  [disabled]="true">
+                </app-time-input>
+              </div>
+            </div>
+          </section>
+
+          <!-- Datetime Input Examples -->
+          <section id="datetime-inputs" class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-6">Datetime Inputs</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Datetime Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Basic Datetime Input</h3>
+                <app-datetime-input
+                  [(ngModel)]="datetimeValue"
+                  placeholder="Select date and time">
+                </app-datetime-input>
+                <div class="mt-2 text-sm text-gray-500">
+                  Selected datetime: {{ datetimeValue || 'None' }}
+                </div>
+              </div>
+
+              <!-- Datetime Input with Helper Text -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Datetime Input with Helper Text</h3>
+                <app-datetime-input
+                  [(ngModel)]="datetimeValue2"
+                  placeholder="Select date and time"
+                  helperText="Please select a date and time for your appointment"
+                  [showHelperText]="true">
+                </app-datetime-input>
+              </div>
+
+              <!-- Disabled Datetime Input -->
+              <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">Disabled Datetime Input</h3>
+                <app-datetime-input
+                  [(ngModel)]="datetimeValue3"
+                  placeholder="Select date and time"
+                  [disabled]="true">
+                </app-datetime-input>
+              </div>
+            </div>
+          </section>
+
+          <!-- Form Example -->
+          <section id="form-example" class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-6">Form Example</h2>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Start Date and Time -->
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 mb-1">Start Date</h3>
+                  <app-date-input
+                    formControlName="startDate"
+                    placeholder="Select start date">
+                  </app-date-input>
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 mb-1">Start Time</h3>
+                  <app-time-input
+                    formControlName="startTime"
+                    placeholder="Select start time">
+                  </app-time-input>
+                </div>
+
+                <!-- End Date and Time -->
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 mb-1">End Date</h3>
+                  <app-date-input
+                    formControlName="endDate"
+                    placeholder="Select end date">
+                  </app-date-input>
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 mb-1">End Time</h3>
+                  <app-time-input
+                    formControlName="endTime"
+                    placeholder="Select end time">
+                  </app-time-input>
+                </div>
+
+                <!-- Event Datetime -->
+                <div class="md:col-span-2">
+                  <h3 class="text-lg font-medium text-gray-900 mb-1">Event Datetime</h3>
+                  <app-datetime-input
+                    formControlName="eventDatetime"
+                    placeholder="Select event date and time"
+                    helperText="Select the exact date and time for your event"
+                    [showHelperText]="true">
+                  </app-datetime-input>
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
       </main>
     </div>
@@ -522,6 +706,10 @@ export class DemoComponent {
     { id: 'tabs', name: 'Tabs' },
     { id: 'accordion', name: 'Accordion' },
     { id: 'toasts', name: 'Toasts' },
+    { id: 'date-inputs', name: 'Date Inputs' },
+    { id: 'time-inputs', name: 'Time Inputs' },
+    { id: 'datetime-inputs', name: 'Datetime Inputs' },
+    { id: 'form-example', name: 'Form Example' },
   ];
 
   // Modal state
@@ -612,6 +800,34 @@ export class DemoComponent {
     { value: '2', label: 'Pro Plan', description: 'Best for growing businesses' },
     { value: '3', label: 'Enterprise Plan', description: 'For large organizations' }
   ];
+
+  // Date Input Values
+  dateValue: string = '';
+  dateValue2: string = '';
+  dateValue3: string = '';
+
+  // Time Input Values
+  timeValue: string = '';
+  timeValue2: string = '';
+  timeValue3: string = '';
+
+  // Datetime Input Values
+  datetimeValue: string = '';
+  datetimeValue2: string = '';
+  datetimeValue3: string = '';
+
+  // Form
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      startDate: [''],
+      startTime: [''],
+      endDate: [''],
+      endTime: [''],
+      eventDatetime: ['']
+    });
+  }
 
   // Modal methods
   openModal() {
@@ -708,5 +924,11 @@ export class DemoComponent {
       message: 'This is an info toast message',
       duration: 3000
     });
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      console.log('Form submitted:', this.form.value);
+    }
   }
 }
